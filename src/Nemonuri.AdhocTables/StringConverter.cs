@@ -9,14 +9,14 @@ public interface IStringConverter
     public bool TryConvertBack(object value, CultureInfo? cultureInfo, [NotNullWhen(true)] out string? result);
 }
 
-public interface IStringConverter<TTarget>
+public interface IStringConverter<TTarget> : IStringConverter
 {
     public bool TryConvert(string value, CultureInfo? cultureInfo, [NotNullWhen(true)] out TTarget? result);
 
     public bool TryConvertBack(TTarget value, CultureInfo? cultureInfo, [NotNullWhen(true)] out string? result);
 }
 
-public abstract class StringConverterBase<TTarget> : IStringConverter<TTarget>, IStringConverter
+public abstract class StringConverterBase<TTarget> : IStringConverter<TTarget>
 {
     protected StringConverterBase() {}
 

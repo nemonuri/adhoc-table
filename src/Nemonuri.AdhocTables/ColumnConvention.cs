@@ -2,29 +2,29 @@ namespace Nemonuri.AdhocTables;
 
 public record ColumnConvention
 {
-    public ColumnConvention(string columnName, CellDataConvention cellDataConvention)
+    public ColumnConvention(string columnName, CellConvention cellConvention)
     {
         Guard.IsNotNull(columnName);
-        Guard.IsNotNull(cellDataConvention);
+        Guard.IsNotNull(cellConvention);
         ColumnName = columnName;
-        CellDataConvention = cellDataConvention;
+        CellConvention = cellConvention;
     }
 
     public string ColumnName {get;}
-    public CellDataConvention CellDataConvention {get;}
+    public CellConvention CellConvention {get;}
     public ColumnConventionBuilder ToBuilder => new() {
         ColumnName = ColumnName,
-        CellDataConvention = CellDataConvention
+        CellConvention = CellConvention
     };
 }
 
 public class ColumnConventionBuilder()
 {
     public string? ColumnName {get;set;}
-    public CellDataConvention? CellDataConvention {get;set;}
+    public CellConvention? CellConvention {get;set;}
 
-    [MemberNotNullWhen(true, nameof(ColumnName), nameof(CellDataConvention))]
-    public bool IsValid => ColumnName != null && CellDataConvention != null;
+    [MemberNotNullWhen(true, nameof(ColumnName), nameof(CellConvention))]
+    public bool IsValidToBuild => ColumnName != null && CellConvention != null;
 
-    public ColumnConvention? Build() => IsValid ? new ColumnConvention(ColumnName, CellDataConvention) : null;
+    public ColumnConvention? Build() => IsValidToBuild ? new ColumnConvention(ColumnName, CellConvention) : null;
 }
