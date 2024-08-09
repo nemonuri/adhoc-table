@@ -21,6 +21,22 @@ public record CellConvention
         EmptyValue = EmptyValue,
         IsEmptyable = IsEmptyable
     };
+
+    internal object? CreateConvertedEmptyValueOrNull(CultureInfo? cultureInfo = null)
+    {
+        var cul = cultureInfo ?? CultureInfo.InvariantCulture;
+
+        if (EmptyValue == null)
+        {
+            return null;
+        }
+
+        if (CanonDataTypeConverter.TryConvert(EmptyValue, cul, out object? result))
+        {
+            return result;
+        }
+        return null;
+    }
 }
 
 public class CellConventionBuiler()
