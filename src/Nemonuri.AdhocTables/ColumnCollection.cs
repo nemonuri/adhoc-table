@@ -40,4 +40,20 @@ public class ColumnCollection : IReadOnlyList<Column>
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    private int? _primaryKeyIndex;
+    public int PrimaryKeyIndex => _primaryKeyIndex ??= GetFirstIndex(static c => c.IsPrimaryKey);
+
+    internal int GetFirstIndex(Func<Column, bool> predicate)
+    {
+        Guard.IsNotNull(predicate);
+        for (int i=0;i < Count;i++)
+        {
+            if (predicate(this[i]))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
 }

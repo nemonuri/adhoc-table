@@ -4,6 +4,8 @@ public record AdhocTable
 {
     public static AdhocTableBuilder CreateBuilder() => new();
 
+    private readonly List<Row> _rows;
+
     internal AdhocTable(
         string id,
         ColumnConventionCollection columnConventionCollection,
@@ -15,6 +17,7 @@ public record AdhocTable
         Id = id;
         _columnConventionCollection = columnConventionCollection;
         _adhocTableContext = adhocTableContext ?? AdhocTableContext.Default;
+        _rows = new();
 
         AdhocTableContext.Default.AddTable(this);
     }
@@ -36,6 +39,18 @@ public record AdhocTable
 
     private ColumnCollection? _columnCollection;
     public ColumnCollection ColumnCollection => _columnCollection ?? new ColumnCollection(this);
+
+    public IReadOnlyList<Row> Rows => _rows;
+
+    [MemberNotNullWhen(true, nameof(RowDictionaryInternal), nameof(RowDictionary))]
+    public bool HasPrimaryKey => PrimaryKeyColumnIndex > 0;
+
+    public int PrimaryKeyColumnIndex => ColumnCollection.PrimaryKeyIndex;
+
+    private Dictionary<object, Row>? _rowDictionary;
+    internal Dictionary<object, Row>? RowDictionaryInternal =>
+        _rowDictionary ??= (HasPrimaryKey ? new Dictionary<object, Row>() : null);
+    public IReadOnlyDictionary<object, Row>? RowDictionary => RowDictionaryInternal;
 
     public bool Add(ReadOnlySpan<string> strings)
     {
@@ -62,8 +77,15 @@ public record AdhocTable
             {
                 ColumnCollection[j].RemoveLast();
             }
+            return false;
         }
 
+        var addingRow = new Row(insertableCells);
+        _rows.Add(addingRow);
+        if (HasPrimaryKey)
+        {
+            RowDictionaryInternal.Add(addingRow[PrimaryKeyColumnIndex].ConvertedValue, addingRow);
+        }
         return true;
     }
 }

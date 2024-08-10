@@ -14,6 +14,11 @@ public class AdhocTableContext
         _tableDictionary = new ConcurrentDictionary<string, AdhocTable>();
     }    
 
+    public bool IsTableIdExist(string id) => _tableDictionary.ContainsKey(id);
+
+    public bool TryGetTableFromId(string id, [NotNullWhen(true)] out AdhocTable? table) =>
+        _tableDictionary.TryGetValue(id, out table);
+
     internal void AddTable(AdhocTable table)
     {
         Guard.IsNotNull(table);

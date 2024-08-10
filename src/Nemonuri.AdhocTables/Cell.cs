@@ -35,7 +35,9 @@ public class Cell
         _convertedValue :
         ThrowHelper.ThrowInvalidDataException<object>(/* TODO */);
     
+    [MemberNotNullWhen(true, nameof(Column))]
     public bool IsInsertedToColumn => _column != null;
+    [MemberNotNullWhen(true, nameof(Column), nameof(Row), nameof(AdhocTable))]
     public bool IsInsertedToTable => _column != null && _row != null;
 
     public Column? Column => _column;
@@ -53,6 +55,8 @@ public class Cell
         //TODO: interlocked
         _row = row;
     }
+
+    public AdhocTable? AdhocTable => IsInsertedToTable ? Column.AdhocTable : null;
 
     public IReferenceConvention? ReferenceConvention => _columnConvention.ReferenceConvention;
 }

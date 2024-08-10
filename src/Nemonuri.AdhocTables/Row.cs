@@ -16,6 +16,8 @@ public class Row : IReadOnlyList<Cell>
         }
     }
 
+    public AdhocTable? AdhocTable => (Count > 0 && _cells[0].IsInsertedToTable) ? _cells[0].AdhocTable : null;
+
     public Cell this[int index] => _cells[index];
 
     public int Count => _cells.Length;
