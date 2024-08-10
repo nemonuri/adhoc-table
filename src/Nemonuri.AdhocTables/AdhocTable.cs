@@ -19,7 +19,7 @@ public record AdhocTable
         _adhocTableContext = adhocTableContext ?? AdhocTableContext.Default;
         _rows = new();
 
-        AdhocTableContext.Default.AddTable(this);
+        _adhocTableContext.AddTable(this);
     }
 
     public string Id {get;}

@@ -8,7 +8,6 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
 
-    <DefineConstants>$(DefineConstants);WRITE_OUTPUT</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

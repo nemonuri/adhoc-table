@@ -5,6 +5,7 @@
   <PropertyGroup>
     <UseArtifactsOutput>true</UseArtifactsOutput>
     <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts\</ArtifactsPath>
+    <DefineConstants>$(DefineConstants);WRITE_OUTPUT</DefineConstants>
   </PropertyGroup>
   
 </Project>
