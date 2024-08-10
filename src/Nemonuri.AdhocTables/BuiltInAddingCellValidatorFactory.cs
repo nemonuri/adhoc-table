@@ -19,6 +19,9 @@ public static class BuiltInAddingCellValidatorFactory
         {
             if (!column.AdhocTableContext.TryGetTableFromId(_tableId, out AdhocTable? table)) {return false;}
             if (!table.HasPrimaryKey) {return false;}
+            if (!table.ColumnConventionCollection[table.PrimaryKeyColumnIndex].CellConvention.CanonDataTypeConverter.TargetType.IsEquivalentTo(
+                column.CellConvention.CanonDataTypeConverter.TargetType
+            )) {return false;}
             return true;
         }
     }
