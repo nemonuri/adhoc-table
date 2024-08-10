@@ -38,7 +38,7 @@ public record AdhocTable
     public AdhocTableContext AdhocTableContext => _adhocTableContext;
 
     private ColumnCollection? _columnCollection;
-    public ColumnCollection ColumnCollection => _columnCollection ?? new ColumnCollection(this);
+    public ColumnCollection ColumnCollection => _columnCollection ??= new ColumnCollection(this);
 
     public IReadOnlyList<Row> Rows => _rows;
 

@@ -35,7 +35,7 @@ public class AdhocTableContext
         {
             return !throwOnError && ThrowHelper.ThrowInvalidOperationException<bool>(/* TODO */);
         }
-        if (_tableDictionary.ContainsKey(id))
+        if (_tableDictionary.ContainsKey(id!))
         {
             return !throwOnError && ThrowHelper.ThrowInvalidOperationException<bool>(/* TODO */);
         }

@@ -1,7 +1,8 @@
-#if NETSTANDARD2_0
 /* Original:
 https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/HashCode.cs
 */
+
+#if NETSTANDARD2_0
 
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
@@ -76,7 +77,10 @@ namespace System
         private static unsafe uint GenerateGlobalSeed()
         {
             uint result;
-            Interop.GetRandomBytes((byte*)&result, sizeof(uint));
+            
+            //Interop.GetRandomBytes((byte*)&result, sizeof(uint)); // <-- Original Code
+            result = (uint)DateTime.UtcNow.Ticks;
+
             return result;
         }
 
@@ -342,17 +346,17 @@ namespace System
                 switch (_length % 4)
                 {
                     case 1:
-                        Debug.Assert(Unsafe.ByteOffset(ref pos, ref end) >= sizeof(int));
+                        Debug.Assert(Unsafe.ByteOffset(ref pos, ref end).ToInt32() >= sizeof(int));
                         Add(Unsafe.ReadUnaligned<int>(ref pos));
                         pos = ref Unsafe.Add(ref pos, sizeof(int));
                         goto case 2;
                     case 2:
-                        Debug.Assert(Unsafe.ByteOffset(ref pos, ref end) >= sizeof(int));
+                        Debug.Assert(Unsafe.ByteOffset(ref pos, ref end).ToInt32() >= sizeof(int));
                         Add(Unsafe.ReadUnaligned<int>(ref pos));
                         pos = ref Unsafe.Add(ref pos, sizeof(int));
                         goto case 3;
                     case 3:
-                        Debug.Assert(Unsafe.ByteOffset(ref pos, ref end) >= sizeof(int));
+                        Debug.Assert(Unsafe.ByteOffset(ref pos, ref end).ToInt32() >= sizeof(int));
                         Add(Unsafe.ReadUnaligned<int>(ref pos));
                         pos = ref Unsafe.Add(ref pos, sizeof(int));
                         break;
@@ -361,10 +365,10 @@ namespace System
 
             // With the queue clear, we add sixteen bytes at a time until the input has fewer than sixteen bytes remaining.
             // We first have to round the end pointer to the nearest 16-byte block from the offset. This makes the loop's condition simpler.
-            ref byte blockEnd = ref Unsafe.Subtract(ref end, Unsafe.ByteOffset(ref pos, ref end) % (sizeof(int) * 4));
+            ref byte blockEnd = ref Unsafe.Subtract(ref end, Unsafe.ByteOffset(ref pos, ref end).ToInt32() % (sizeof(int) * 4));
             while (Unsafe.IsAddressLessThan(ref pos, ref blockEnd))
             {
-                Debug.Assert(Unsafe.ByteOffset(ref pos, ref blockEnd) >= (sizeof(int) * 4));
+                Debug.Assert(Unsafe.ByteOffset(ref pos, ref blockEnd).ToInt32() >= (sizeof(int) * 4));
                 uint v1 = Unsafe.ReadUnaligned<uint>(ref pos);
                 _v1 = Round(_v1, v1);
                 uint v2 = Unsafe.ReadUnaligned<uint>(ref Unsafe.Add(ref pos, sizeof(int) * 1));
@@ -380,7 +384,7 @@ namespace System
 
         Small:
             // Add four bytes at a time until the input has fewer than four bytes remaining.
-            while (Unsafe.ByteOffset(ref pos, ref end) >= sizeof(int))
+            while (Unsafe.ByteOffset(ref pos, ref end).ToInt32() >= sizeof(int))
             {
                 Add(Unsafe.ReadUnaligned<int>(ref pos));
                 pos = ref Unsafe.Add(ref pos, sizeof(int));
@@ -501,11 +505,11 @@ namespace System
 
         [Obsolete("HashCode is a mutable struct and should not be compared with other HashCodes. Use ToHashCode to retrieve the computed hash code.", error: true)]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => throw new NotSupportedException(SR.HashCode_HashCodeNotSupported);
+        public override int GetHashCode() => throw new NotSupportedException();
 
         [Obsolete("HashCode is a mutable struct and should not be compared with other HashCodes.", error: true)]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object? obj) => throw new NotSupportedException(SR.HashCode_EqualityNotSupported);
+        public override bool Equals(object? obj) => throw new NotSupportedException();
 #pragma warning restore 0809
     }
 }
