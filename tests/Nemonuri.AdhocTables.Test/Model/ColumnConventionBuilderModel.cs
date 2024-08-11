@@ -15,7 +15,7 @@ public static class ColumnConventionBuilderModel
         new ColumnConventionBuilder()
         {
             ColumnName = columnName ?? "ForeignId",
-            CellConvention = BuiltInCellConvention.UInt32WithoutZero,
+            CellConvention = BuiltInCellConvention.UInt32,
             IsUnique = false,
             IsPrimaryKey = false,
             ReferenceConvention = BuiltInReferenceConventionFactory.TableAndPrimeKeyToRow.Create(tableId ?? AdhocTableBuilderModel.RootTableId1)

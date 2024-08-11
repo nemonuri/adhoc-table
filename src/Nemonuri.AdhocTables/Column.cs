@@ -99,6 +99,7 @@ public class Column
         if (cell.ColumnConvention != ColumnConvention) {return false;}
         if (cell.IsInsertedToColumn) {return false;}
 
+        cell.SetColumn(this);
         _cells.Add(cell);
         if (IsUnique)
         {

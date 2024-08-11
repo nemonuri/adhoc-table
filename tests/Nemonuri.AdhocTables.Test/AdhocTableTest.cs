@@ -63,4 +63,37 @@ public class AdhocTableTest
         Assert.Equal(expected1, actual1);
         Assert.Equal(expected2, actual2);
     }
+
+    [Theory]
+    [InlineData(2, "Root")]
+    [InlineData(3, "Root")]
+    [InlineData(4, "Root")]
+    [InlineData(5, "Leaf2")]
+    [InlineData(6, "Leaf2")]
+    public void RidForeignKeyStringValueAdhocTable_With_Added_Rows__Forall_Row_Get_By_Default_Reference__Result_Is_Expected
+    (
+        uint rid,
+        string expected
+    )
+    {
+        //Model
+        var adhocTable = AdhocTableModel.CreateRidForeignKeyStringValueAdhocTable(new AdhocTableContext());
+        adhocTable.Add(["1", "0", "Root"]);
+        adhocTable.Add(["2", "1", "Leaf1"]);
+        adhocTable.Add(["3", "1", "Leaf2"]);
+        adhocTable.Add(["4", "1", "Leaf3"]);
+        adhocTable.Add(["5", "3", "Leaf4"]);
+        adhocTable.Add(["6", "3", "Leaf5"]);
+
+        //Act
+        string actual = string.Empty;
+        Cell? cell = adhocTable.RowDictionary?[rid][1];
+        if (cell != null)
+        {
+            actual = cell.ReferenceConvention?.GetByReference(cell) as string ?? actual;
+        }
+
+        //Assert
+        Assert.Equal(expected, actual);
+    }
 }
