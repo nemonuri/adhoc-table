@@ -13,8 +13,8 @@ public record AdhocTable
     private readonly List<Row> _rows;
 
     public AdhocTable(
-        string? id,
-        ColumnConventionCollection? columnConventionCollection,
+        string? id = null,
+        ColumnConventionCollection? columnConventionCollection = null,
         AdhocTableContext? adhocTableContext = null)
     {
         _columnConventionCollection = columnConventionCollection ?? DefaultColumnConvention;
@@ -53,7 +53,7 @@ public record AdhocTable
     public IReadOnlyList<Row> Rows => _rows;
 
     [MemberNotNullWhen(true, nameof(RowDictionaryInternal), nameof(RowDictionary))]
-    public bool HasPrimaryKey => PrimaryKeyColumnIndex > 0;
+    public bool HasPrimaryKey => PrimaryKeyColumnIndex >= 0;
 
     public int PrimaryKeyColumnIndex => ColumnCollection.PrimaryKeyIndex;
 

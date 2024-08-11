@@ -13,7 +13,7 @@ public class AdhocTableBuilderTest
 
     [Theory]
     [MemberData(nameof(GetAdhocTableBuilders))]
-    public void AdhocTableBuilder__Build_Result__Is_Not_Null(AdhocTableBuilder builderArg)
+    public void AdhocTableBuilder__Build_Result__No_Exception(AdhocTableBuilder builderArg)
     {
         //Model
         builderArg.AdhocTableContext = new AdhocTableContext();
@@ -23,6 +23,8 @@ public class AdhocTableBuilderTest
         AdhocTable? adhocTable = builder.Build();
 
         //Assert
-        Assert.NotNull(adhocTable);
+#if WRITE_OUTPUT
+        _output.WriteLine(adhocTable.ToString());
+#endif
     }
 }

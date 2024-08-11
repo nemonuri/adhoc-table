@@ -30,6 +30,7 @@ public static class ColumnConventionBuilderModel
 
     public static IEnumerable<object[]> GetColumnConventionBuilders()
     {
+        yield return [new ColumnConventionBuilder()];
         yield return [CreateRidColumnConventionBuilder()];
         yield return [CreateForeignKeyColumnConventionBuilder()];
         yield return [CreateStringValueColumnConventionBuilder()];

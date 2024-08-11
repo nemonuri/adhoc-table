@@ -10,14 +10,15 @@ public static class AdhocTableBuilderModel
         new AdhocTableBuilder() {
             Id = RootTableId1,
             ColumnConventionCollection = new ([
-                C.CreateRidColumnConventionBuilder().Build()!,
-                C.CreateForeignKeyColumnConventionBuilder().Build()!,
-                C.CreateStringValueColumnConventionBuilder().Build()!
+                C.CreateRidColumnConventionBuilder().Build(),
+                C.CreateForeignKeyColumnConventionBuilder().Build(),
+                C.CreateStringValueColumnConventionBuilder().Build()
             ])
         };
 
     public static IEnumerable<object[]> GetAdhocTableBuilders()
     {
+        yield return [new AdhocTableBuilder()];
         yield return [CreateAdhocTableBuilder()];
     }
 }

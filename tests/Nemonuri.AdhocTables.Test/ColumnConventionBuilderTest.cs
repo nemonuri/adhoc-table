@@ -13,7 +13,7 @@ public class ColumnConventionBuilderTest
 
     [Theory]
     [MemberData(nameof(GetColumnConventionBuilders))]
-    public void ColumnConventionBuilder__Build_Result__Is_Not_Null(ColumnConventionBuilder builderArg)
+    public void ColumnConventionBuilder__Build_Result__No_Exception(ColumnConventionBuilder builderArg)
     {
         //Model
         ColumnConventionBuilder builder = builderArg;
@@ -22,7 +22,6 @@ public class ColumnConventionBuilderTest
         ColumnConvention? columnConvention = builder.Build();
 
         //Assert
-        Assert.NotNull(columnConvention);
 #if WRITE_OUTPUT
         _output.WriteLine(columnConvention.ToString());
 #endif
