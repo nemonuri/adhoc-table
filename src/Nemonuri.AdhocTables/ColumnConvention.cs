@@ -3,17 +3,15 @@ namespace Nemonuri.AdhocTables;
 public record ColumnConvention
 {
     public ColumnConvention(
-        string columnName, 
-        CellConvention cellConvention,
+        string? columnName = null, 
+        CellConvention? cellConvention = null,
         bool isUnique = false,
         bool isPrimaryKey = false,
         CultureInfo? cultureInfo = null,
         IReferenceConvention? referenceConvention = null)
     {
-        Guard.IsNotNull(columnName);
-        Guard.IsNotNull(cellConvention);
-        ColumnName = columnName;
-        CellConvention = cellConvention;
+        ColumnName = columnName ?? CreateDefaultColumnName();
+        CellConvention = cellConvention ?? new CellConvention();
         IsUnique = isUnique;
         IsPrimaryKey = isPrimaryKey;
         CultureInfo = cultureInfo ?? CultureInfo.InvariantCulture;
@@ -35,29 +33,13 @@ public record ColumnConvention
         CultureInfo = CultureInfo,
         ReferenceConvention = ReferenceConvention
     };
-}
 
-public class ColumnConventionBuilder()
-{
-    public string? ColumnName {get;set;}
-    public CellConvention? CellConvention {get;set;}
-    public bool IsUnique {get;set;}
-    public bool IsPrimaryKey {get;set;}
-    public CultureInfo? CultureInfo {get;set;}
-    public IReferenceConvention? ReferenceConvention {get;set;}
 
-    [MemberNotNullWhen(true, nameof(ColumnName), nameof(CellConvention))]
-    public bool IsValidToBuild => ColumnName != null && CellConvention != null;
-
-    public ColumnConvention? Build() => 
-        IsValidToBuild 
-            ? new ColumnConvention(
-                ColumnName, 
-                CellConvention,
-                IsUnique,
-                IsPrimaryKey,
-                CultureInfo,
-                ReferenceConvention
-              )
-            : null;
+    private const string DefaultColumnNamePrefix = "Column";
+    private static string CreateDefaultColumnName()
+    {
+        return 
+            DefaultColumnNamePrefix 
+            + new Random((int)DateTime.UtcNow.Ticks).Next(1, 1000);
+    }
 }

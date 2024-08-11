@@ -2,10 +2,13 @@
 
 public record CellConvention
 {
-    public CellConvention(IStringConverter canonDataTypeConverter, string? emptyValue = null, bool isEmptyable = true)
+    public CellConvention(
+        IStringConverter? canonDataTypeConverter = null,
+        string? emptyValue = null, 
+        bool isEmptyable = true
+    )
     {
-        Guard.IsNotNull(canonDataTypeConverter);
-        CanonDataTypeConverter = canonDataTypeConverter;
+        CanonDataTypeConverter = canonDataTypeConverter ?? BuiltInStringConverter.StringToString;
         EmptyValue = emptyValue;
         IsEmptyable = isEmptyable;
     }
@@ -16,7 +19,7 @@ public record CellConvention
 
     public bool IsEmptyable {get;}
 
-    public CellConventionBuiler ToBuilder => new() {
+    public CellConventionBuiler ToBuilder() => new() {
         CanonDataTypeConverter = CanonDataTypeConverter,
         EmptyValue = EmptyValue,
         IsEmptyable = IsEmptyable
@@ -37,21 +40,4 @@ public record CellConvention
         }
         return null;
     }
-}
-
-public class CellConventionBuiler()
-{
-    public IStringConverter? CanonDataTypeConverter {get;set;}
-
-    public string? EmptyValue {get;set;}
-
-    public bool IsEmptyable {get;set;}
-
-    [MemberNotNullWhen(true, nameof(CanonDataTypeConverter))]
-    public bool IsValidToBuild => CanonDataTypeConverter != null;
-
-    public CellConvention? Build() =>
-        IsValidToBuild ? 
-            new CellConvention(CanonDataTypeConverter, EmptyValue, IsEmptyable)
-            : null;
 }
