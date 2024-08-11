@@ -1,5 +1,7 @@
 namespace Nemonuri.AdhocTables.Test;
 
+using Model;
+
 public class ColumnConventionBuilderTest
 {
     private readonly ITestOutputHelper _output;

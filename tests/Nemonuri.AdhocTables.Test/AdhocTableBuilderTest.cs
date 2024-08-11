@@ -1,5 +1,7 @@
 namespace Nemonuri.AdhocTables.Test;
 
+using Model;
+
 public class AdhocTableBuilderTest
 {
     private readonly ITestOutputHelper _output;
@@ -24,7 +26,7 @@ public class AdhocTableBuilderTest
 
         //Assert
 #if WRITE_OUTPUT
-        _output.WriteLine(adhocTable.ToString());
+        _output.WriteLine(adhocTable.ToString()); //TODO: Make debugger view method
 #endif
     }
 }

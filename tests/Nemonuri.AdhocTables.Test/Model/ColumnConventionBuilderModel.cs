@@ -1,4 +1,4 @@
-namespace Nemonuri.AdhocTables.Test;
+namespace Nemonuri.AdhocTables.Test.Model;
 
 public static class ColumnConventionBuilderModel
 {
@@ -21,10 +21,10 @@ public static class ColumnConventionBuilderModel
             ReferenceConvention = BuiltInReferenceConventionFactory.TableAndPrimeKeyToRow.Create(tableId ?? AdhocTableBuilderModel.RootTableId1)
         };
 
-    public static ColumnConventionBuilder CreateStringValueColumnConventionBuilder() =>
+    public static ColumnConventionBuilder CreateStringValueColumnConventionBuilder(string? columnName = null) =>
         new ColumnConventionBuilder()
         {
-            ColumnName = "StringValue",
+            ColumnName = columnName ?? "StringValue",
             CellConvention = BuiltInCellConvention.TrimmedString
         };
 
