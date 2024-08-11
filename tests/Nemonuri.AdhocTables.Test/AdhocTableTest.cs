@@ -90,7 +90,7 @@ public class AdhocTableTest
         Cell? cell = adhocTable.RowDictionary?[rid][1];
         if (cell != null)
         {
-            actual = cell.ReferenceConvention?.GetByReference(cell) as string ?? actual;
+            actual = (cell.ReferenceConvention?.GetByReference(cell) as Row)?[2].Value ?? actual;
         }
 
         //Assert
