@@ -4,23 +4,33 @@ public record AdhocTable
 {
     public static AdhocTableBuilder CreateBuilder() => new();
 
+    private static ColumnConventionCollection? s_defaultColumnConvention;
+    internal static ColumnConventionCollection DefaultColumnConvention =>
+        s_defaultColumnConvention ??
+        Interlocked.CompareExchange(ref s_defaultColumnConvention, new ColumnConventionCollection([new ColumnConvention()]), null) ??
+        s_defaultColumnConvention;
+
     private readonly List<Row> _rows;
 
-    internal AdhocTable(
-        string id,
-        ColumnConventionCollection columnConventionCollection,
+    public AdhocTable(
+        string? id,
+        ColumnConventionCollection? columnConventionCollection,
         AdhocTableContext? adhocTableContext = null)
     {
-        IsValidIdToBuild(id, true);
-        Guard.IsNotNull(columnConventionCollection);
-
-        Id = id;
-        _columnConventionCollection = columnConventionCollection;
+        _columnConventionCollection = columnConventionCollection ?? DefaultColumnConvention;
         _adhocTableContext = adhocTableContext ?? AdhocTableContext.Default;
         _rows = new();
+        Id = id ?? CreateDefaultTableId(_adhocTableContext);
 
         _adhocTableContext.AddTable(this);
     }
+
+    public AdhocTableBuilder ToBuilder() =>
+        new () {
+            Id = Id,
+            ColumnConventionCollection = ColumnConventionCollection,
+            AdhocTableContext = AdhocTableContext
+        };
 
     public string Id {get;}
     internal static bool IsValidIdToBuild(string? id, bool throwOnError)
@@ -88,18 +98,17 @@ public record AdhocTable
         }
         return true;
     }
-}
 
-public class AdhocTableBuilder()
-{
-    public string? Id {get;set;}
-    public ColumnConventionCollection? ColumnConventionCollection {get;set;}
-    public AdhocTableContext? AdhocTableContext {get;set;}
-
-    [MemberNotNullWhen(true, nameof(Id), nameof(ColumnConventionCollection))]
-    public bool IsValidToBuild => 
-        AdhocTable.IsValidIdToBuild(Id, false) && ColumnConventionCollection != null;
-    
-    public AdhocTable? Build() => 
-        IsValidToBuild ? new(Id, ColumnConventionCollection, AdhocTableContext) : null;
+    private static string CreateDefaultTableId(AdhocTableContext context)
+    {
+        while (true)
+        {
+            string resultCandidate = Guid.NewGuid().ToString();
+            if(!context.IsTableIdExist(resultCandidate))
+            {
+                return resultCandidate;
+            }
+        }
+        
+    }
 }

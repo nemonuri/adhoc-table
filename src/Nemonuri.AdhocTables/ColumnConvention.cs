@@ -25,7 +25,7 @@ public record ColumnConvention
     public CultureInfo CultureInfo {get;}
     public IReferenceConvention? ReferenceConvention {get;}
 
-    public ColumnConventionBuilder ToBuilder => new() {
+    public ColumnConventionBuilder ToBuilder() => new() {
         ColumnName = ColumnName,
         CellConvention = CellConvention,
         IsUnique = IsUnique,
