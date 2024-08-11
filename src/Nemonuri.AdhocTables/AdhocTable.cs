@@ -1,6 +1,6 @@
 namespace Nemonuri.AdhocTables;
 
-public record AdhocTable
+public class AdhocTable
 {
     public static AdhocTableBuilder CreateBuilder() => new();
 
