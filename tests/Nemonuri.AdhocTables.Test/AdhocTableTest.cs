@@ -65,15 +65,12 @@ public class AdhocTableTest
     }
 
     [Theory]
-    [InlineData(2, "Root")]
-    [InlineData(3, "Root")]
-    [InlineData(4, "Root")]
-    [InlineData(5, "Leaf2")]
-    [InlineData(6, "Leaf2")]
+    [MemberData(nameof(GetMembers1))]
     public void RidForeignKeyStringValueAdhocTable_With_Added_Rows__Forall_Row_Get_By_Default_Reference__Result_Is_Expected
     (
         uint rid,
-        string expected
+        string expected,
+        bool useApi
     )
     {
         //Model
@@ -87,13 +84,31 @@ public class AdhocTableTest
 
         //Act
         string actual = string.Empty;
-        Cell? cell = adhocTable.RowDictionary?[rid][1];
-        if (cell != null)
+        if (useApi)
         {
-            actual = (cell.ReferenceConvention?.GetByReference(cell) as Row)?[2].Value ?? actual;
+            actual = adhocTable.RowDictionary?[rid][1].GetDefaultReference<Row>()[2].Value ?? actual;
+        }
+        else
+        {            
+            Cell? cell = adhocTable.RowDictionary?[rid][1];
+            if (cell != null)
+            {
+                actual = (cell.ReferenceConvention?.GetByReference(cell) as Row)?[2].Value ?? actual;
+            }
         }
 
         //Assert
         Assert.Equal(expected, actual);
+    }
+    public static IEnumerable<object[]> GetMembers1()
+    {
+        foreach (var tf in new bool[] {false, true})
+        {
+            yield return [2, "Root", tf];
+            yield return [3, "Root", tf];
+            yield return [4, "Root", tf];
+            yield return [5, "Leaf2", tf];
+            yield return [6, "Leaf2", tf];
+        }
     }
 }

@@ -37,7 +37,7 @@ public class Cell
     
     [MemberNotNullWhen(true, nameof(Column))]
     public bool IsInsertedToColumn => _column != null;
-    [MemberNotNullWhen(true, nameof(Column), nameof(Row), nameof(AdhocTable))]
+    [MemberNotNullWhen(true, nameof(Column), nameof(Row), nameof(AdhocTable), nameof(AdhocTableContext))]
     public bool IsInsertedToTable => _column != null && _row != null;
 
     public Column? Column => _column;
@@ -58,5 +58,39 @@ public class Cell
 
     public AdhocTable? AdhocTable => IsInsertedToTable ? Column.AdhocTable : null;
 
+    public AdhocTableContext? AdhocTableContext => AdhocTable?.AdhocTableContext;
+
     public IReferenceConvention? ReferenceConvention => _columnConvention.ReferenceConvention;
+
+
+    public object GetDefaultReference()
+    {
+        Guard.IsNotNull(ReferenceConvention);
+        object? result = ReferenceConvention.GetByReference(this);
+        Guard.IsNotNull(result, "ReferenceConvention.GetByReference(this)");
+        return result;
+    }
+
+    public bool TryGetDefaultReference([NotNullWhen(true)] out object? outResult)
+    {
+        outResult = ReferenceConvention?.GetByReference(this);
+        return outResult != null;
+    }
+
+    public T GetDefaultReference<T>() => 
+        GetDefaultReference() is T vT ? vT : ThrowHelper.ThrowArrayTypeMismatchException<T>(/* TODO */);
+    
+    public bool TryGetDefaultReference<T>([NotNullWhen(true)] out T? outResult)
+    {
+        if (TryGetDefaultReference(out object? vObj) && vObj is T vT)
+        {
+            outResult = vT;
+            return true;
+        }
+        else
+        {
+            outResult = default;
+            return false;
+        }
+    }
 }
