@@ -4,7 +4,7 @@ namespace Nemonuri.AdhocTables;
 
 public class AdhocTableContext
 {
-#region copy code
+#region Copy code
 /*
 Origianl:
 https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Runtime/Loader/AssemblyLoadContext.cs
@@ -22,7 +22,25 @@ https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib
         Interlocked.CompareExchange(ref s_allContexts, new Dictionary<long, WeakReference<AdhocTableContext>>(), null) ??
         s_allContexts;
 
-#endregion copy code
+    private AdhocTableContext(string? name, bool isCollectible) 
+    {
+        /* Private talk:
+        - What is meaning of 'isCollectible'?
+        - I neet to study about GC of .NET CoreCLR.
+        */
+
+        _tableDictionary = new ConcurrentDictionary<string, AdhocTable>();
+        _name = name;
+        _isCollectible = isCollectible;
+
+        Dictionary<long, WeakReference<AdhocTableContext>> allContexts = AllContexts;
+        lock (allContexts)
+        {
+            _id = s_nextId++;
+            allContexts.Add(_id, new WeakReference<AdhocTableContext>(this, false));
+        }
+    }  
+#endregion Copy code
 
     private static readonly AdhocTableContext s_default = new AdhocTableContext("Default", false);
     public static AdhocTableContext Default => s_default;
@@ -36,19 +54,7 @@ https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib
     {
     }
 
-    private AdhocTableContext(string? name, bool isCollectible) 
-    {
-        _tableDictionary = new ConcurrentDictionary<string, AdhocTable>();
-        _name = name;
-        _isCollectible = isCollectible;
-
-        Dictionary<long, WeakReference<AdhocTableContext>> allContexts = AllContexts;
-        lock (allContexts)
-        {
-            _id = s_nextId++;
-            allContexts.Add(_id, new WeakReference<AdhocTableContext>(this, false));
-        }
-    }    
+  
 
     public string? Name => _name;
 
