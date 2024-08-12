@@ -1,7 +1,7 @@
 
 
 
-namespace Nemonuri.AdhocTables;
+namespace Nemonuri.AdhocTables.BuiltIns;
 
 public static class BuiltInStringConverter
 {

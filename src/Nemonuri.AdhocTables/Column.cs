@@ -1,5 +1,7 @@
 namespace Nemonuri.AdhocTables;
 
+using BuiltIns;
+
 public class Column
 {
     private readonly AdhocTable _adhocTable;

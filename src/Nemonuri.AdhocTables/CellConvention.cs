@@ -1,5 +1,7 @@
 ﻿namespace Nemonuri.AdhocTables;
 
+using BuiltIns;
+
 public record CellConvention
 {
     public CellConvention(
